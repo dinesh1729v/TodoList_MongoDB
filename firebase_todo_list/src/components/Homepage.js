@@ -24,9 +24,9 @@ export default function Homepage() {
   const [date, setDate] = useState("");
   const [todos, setTodos] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
-  const [tempUidd, setTempUidd] = useState("");
   const [user, setUser] = useState({});
   const [pages, setPages] = useState([]);
+  const [editId, setEditId] = useState("");
   const navigate = useNavigate();
   const baseUrl = "http://localhost:3000/todo/";
   useEffect(() => {
@@ -43,11 +43,8 @@ export default function Homepage() {
   }, []);
 
   const getData = async p => {
-    console.log("pp", p);
-    let path = p ? `getAll?page=${p}` : "getAll";
-    console.log("Path",path)
+    let path = p ? `getAll?userId=${user.uid}&page=${p}` : `getAll?userId=${user.uid}`;
     let data = await axios.get(baseUrl + path);
-    console.log("Axios data", data);
     setTodos(data.data?.data);
     let px = [];
     if (data.data?.totalPages) {
@@ -77,82 +74,46 @@ export default function Homepage() {
   };
 
   const [dbvals, setDbVals] = useState("");
-  console.log(todos);
-  const getTodoByUidd = async _id => {
-    console.log("GetTODOByUidd", _id);
-    const response = await axios.get(baseUrl + `getOne?id=${_id}`);
-    const data = response.data;
-    console.log("In getTodoByUIDD",data.data);
-    if (data) {
+
+  const getTodoByUidd = async uidd => {
+    console.log("GetTODOByUidd");
+    const snapshot = await get(child(ref(db), `${auth.currentUser.uid}/${uidd}`));
+    if (snapshot.exists()) {
       console.log("Success");
-      setDbVals(data.data);
-      return data.data;
+      setDbVals(snapshot.val());
+      return snapshot.val();
     } else {
       console.log("Hello");
       return null;
     }
   };
 
-  const handleUpdate = async uid => {
+  const handleUpdate = async rec => {
     setIsEdit(true);
-    const dbVals = await getTodoByUidd(uid);
-    console.log("Dbvals is", dbVals);
+    // const dbVals = await getTodoByUidd(uid);
 
-    if (dbVals && dbVals._id && dbvals.description && dbvals.category && dbvals.date) {
-      console.log(dbvals);
-      setTodo(dbVals.todo);
-      setDescription(dbVals.description);
-      setCategory(dbVals.category);
-      setDate(dbVals.date);
-      setTempUidd(dbvals._id);
-    }
+    setTodo(rec.todo);
+    setDescription(rec.description);
+    setCategory(rec.category);
+    setDate(rec.date);
+    setEditId(rec._id);
   };
 
-  const handleEditConfirm = () => {
-
-    const updateTodo = async (id) => {
-      try {
-        console.log("Update todo", id);
-        let updates = {
-          todo: todo,
-          description: description,
-          category: category,
-          date: date,
-          tempUidd: tempUidd,
-        };
-        const response = await axios.patch(baseUrl + `update`, updates);
-        await getData("");
-        console.log(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    updateTodo(tempUidd);
+  const handleEditConfirm = async () => {
+    await axios.put(`${baseUrl}update/${editId}`, { todo, description, category, date, editId });
     setTodo("");
     setDescription("");
     setCategory("");
     setDate("");
     setIsEdit(false);
-    
 
+    await getData();
   };
 
   // delete
-  // const handleDelete = uid => {
-  //   console.log(uid);
-  //   remove(ref(db, `/${auth.currentUser.uid}/${uid}`));
-  // };
-
-  const handleDelete = async (id) => {
-    try {
-      console.log("Hellolllll")
-      const response = await axios.delete(baseUrl + `deleteOne?id=${id}`);
-      console.log(response.data);
-      await getData("");
-    } catch (error) {
-      console.error(error);
-    }
+  const handleDelete = async id => {
+    let data = await axios.get(`${baseUrl}delete/${id}`);
+    await getData();
   };
 
   return (
@@ -183,7 +144,7 @@ export default function Homepage() {
             <h1>{todo.todo}</h1>
             {/* <h1>{description.description}</h1> */}
 
-            <EditIcon fontSize="large" onClick={() => handleUpdate(todo._id)} className="edit-button" />
+            <EditIcon fontSize="large" onClick={() => handleUpdate(todo)} className="edit-button" />
             <DeleteIcon fontSize="large" onClick={() => handleDelete(todo._id)} className="delete-button" />
           </div>
         ))}

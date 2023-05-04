@@ -46,75 +46,28 @@ exports.createTodo = async (req, res) => {
   } catch (error) {}
 };
 
-
-exports.update = async (req, res) => {
+exports.getAll = async (req, res) => {
   try {
-    const { todo, description, category, date, tempUidd } = req.body;
-    const filter = { _id: tempUidd };
-    const update = {
-      category,
-      todo,
-      description,
-      date,
-    };
-    const result = await model.updateOne(filter, update);
-    res.send(result);
+    let pageLimit = 5;
+    let page = parseInt(req.query.page);
+    let skip = parseInt(pageLimit * (page - 1));
+    let data = await model.find({ userId: req.query.userId }).skip(skip).limit(pageLimit).sort({ updatedAt: -1 });
+    let count = await model.countDocuments({ userId: req.query.userId });
+    let totalPages = parseInt(Math.ceil(count / pageLimit));
+    res.send({ data: data, totalPages: totalPages, page: parseInt(req.query.page) || 1, totalRecords: count });
   } catch (error) {
-    console.log("Error in updateOne function", error);
-    res.status(500).send(error.message);
-  }
-};
-
-exports.getOne = async (req, res) => {
-  try {
-    let id = req.query.id;
-    console.log("REquest in getOne",req);
-    let data = await model.findOne({ _id: id });
-    console.log(data);
-    if (data) {
-      res.send({ data: data });
-    } 
-    else {
-      res.send({ data: "not found" });
-    }
-        
-  } catch (error) {
-    console.log("Error in getone function",error)
-  }
-};
-
-
-
-exports.deleteOne = async (req, res) => {
-  try {
-    let id = req.query.id;
-    console.log("REquest in delete",id);
-    let result = await model.findByIdAndDelete(id);
-    res.send(result);
-    console.log(result);
-  }
-  catch (error) {
     console.log(error);
   }
 };
 
-
-
-
-exports.getAll = async (req, res) => {
-  try {
-    try {
-      let pageLimit = 5;
-      let page = parseInt(req.query.page);
-      let skip = parseInt(pageLimit * (page - 1));
-      let data = await model.find({}).skip(skip).limit(pageLimit).sort({ updatedAt: -1 });
-      let count = await model.countDocuments({});
-      let totalPages = parseInt(Math.ceil(count / pageLimit));
-      res.send({ data: data, totalPages: totalPages, page: parseInt(req.query.page) || 1, totalRecords: count });
-    } catch (error) {
-      console.log(error);
-    }
-  } catch (error) {}
+exports.deleteOne = async (req, res) => {
+  let id = req.params.id;
+  await model.deleteOne({ _id: id });
+  res.send({ msg: "Record Deleted Successfully", statusCode: 200 });
 };
 
-
+exports.edit = async (req, res) => {
+  let id = req.params.id;
+  await model.updateOne({ _id: id }, { $set: req.body });
+  res.send({ msg: "Record Updated Successfully", statusCode: 200 });
+};
