@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 var cors = require("cors");
 // const env = require("dotenv").config();
-let port = 3000;
+let port = 8000;
 app.use(cors());
 let StartServer = async () => {
   app.use("/todo", allroutes);
