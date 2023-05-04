@@ -1,0 +1,92 @@
+use todo
+
+// define collection
+var collection = db.todos
+
+var documents = [{
+  
+  "category": "asdfasdf",
+  "todo": "asdfasdfa",
+  "description": "asdfasdf",
+  "date": "2023-05-18",
+  "userId": "GfIH8flFKKQLP5nf0X7XGHUWtC43",
+  "createdAt": {
+    "$date": "2023-05-04T06:48:59.480Z"
+  },
+  "updatedAt": {
+    "$date": "2023-05-04T06:48:59.480Z"
+  },
+  "__v": 0
+},{
+  
+  "category": "dksjlhflakjsdf",
+  "todo": "asdfasdfa",
+  "description": "asdfasgadg",
+  "date": "2023-05-24",
+  "userId": "GfIH8flFKKQLP5nf0X7XGHUWtC43",
+  "createdAt": {
+    "$date": "2023-05-04T06:49:12.652Z"
+  },
+  "updatedAt": {
+    "$date": "2023-05-04T06:49:12.652Z"
+  },
+  "__v": 0
+},{
+  
+  "category": "oiojojjojojojo",
+  "todo": "asdfasdfa",
+  "description": "oujohiojoojo",
+  "date": "",
+  "userId": "GfIH8flFKKQLP5nf0X7XGHUWtC43",
+  "createdAt": {
+    "$date": "2023-05-04T06:49:20.633Z"
+  },
+  "updatedAt": {
+    "$date": "2023-05-04T06:49:20.633Z"
+  },
+  "__v": 0
+},{
+  
+  "category": "ohohjalsjdf",
+  "todo": "ooooooo",
+  "description": "asdfasdf",
+  "date": "",
+  "userId": "GfIH8flFKKQLP5nf0X7XGHUWtC43",
+  "createdAt": {
+    "$date": "2023-05-04T06:49:30.736Z"
+  },
+  "updatedAt": {
+    "$date": "2023-05-04T06:49:30.736Z"
+  },
+  "__v": 0
+},{
+  
+  "category": "dfsdfgas",
+  "todo": "asdfadsfasd",
+  "description": "asdfasdf",
+  "date": "2023-05-25",
+  "userId": "GfIH8flFKKQLP5nf0X7XGHUWtC43",
+  "createdAt": {
+    "$date": "2023-05-04T07:16:38.612Z"
+  },
+  "updatedAt": {
+    "$date": "2023-05-04T07:16:38.612Z"
+  },
+  "__v": 0
+},{
+  
+  "category": "adsfadsf",
+  "todo": "asadsfasdfasdfasddfadsfasd",
+  "description": "asdfasdf",
+  "date": "2023-06-07",
+  "userId": "GfIH8flFKKQLP5nf0X7XGHUWtC43",
+  "createdAt": {
+    "$date": "2023-05-04T07:16:47.171Z"
+  },
+  "updatedAt": {
+    "$date": "2023-05-04T07:16:47.171Z"
+  },
+  "__v": 0
+}];
+
+collection.insertMany(documents);
