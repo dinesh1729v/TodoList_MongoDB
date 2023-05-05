@@ -29,6 +29,8 @@ export default function Homepage() {
   const [editId, setEditId] = useState("");
   const navigate = useNavigate();
   const baseUrl = "http://localhost:8000/todo/";
+
+
   useEffect(() => {
     auth.onAuthStateChanged(async userr => {
       if (userr) {
@@ -40,7 +42,9 @@ export default function Homepage() {
         navigate("/");
       }
     });
-  }, []);
+  }, [user]);
+
+
 
   const getData = async p => {
     let path = p ? `getAll?userId=${user.uid}&page=${p}` : `getAll?userId=${user.uid}`;
